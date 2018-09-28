@@ -1,128 +1,118 @@
-import java.util.*;
+public class Board {
+    private byte[][] board = new byte[3][3];
+    private int[] pos = new int[2];
 
-public class BFS {
-    static final byte[][] goal = {{1, 2, 3},{4, 5, 6},{7, 8, 0 }};
-    static final int[] initPos = {2,2};
-    static final Board answer = new Board(goal);
-    static Random rn = new Random(System.currentTimeMillis());
+    private int Distance;
 
-    public static void main(String[] args) {
-        for (int i = 0; i < 100; i++) {
-            Board init = generate(5);
-            //System.out.println(BFS(init, answer)+"\t"+DFS(init, answer)+"\t"+aMannhattan(init, answer));
-            System.out.print(BFS(init, answer)+"\t");
-            System.out.print(iterativeDFS(init, answer)+"\t");
-            System.out.println(DFS(init, answer, 100000));
-            //System.out.println(aMannhattan(init, answer));
-        }
+    public Board(byte[][] board){
+        this.board = board;
     }
 
-    public static Board generate(int movements){
-        int[] pos =  {2, 2};
-        Board board = new Board(goal, pos);
-        for (int i = 0; i < movements ; i++) {
-            int newCoord = rn.nextInt(3);
-            Board newBoard;
-            if(i%2==1){
-                int[] newPos = {pos[0], newCoord};
-                newBoard = board.move(newPos);
-            }else{
-                int[] newPos = {newCoord, pos[1]} ;
-                newBoard = board.move(newPos);
-            }
-            if(newBoard.equals(board)){
-                i--;
-            }else{
-                board = newBoard;
-                pos = newBoard.getPos();
+    public Board(byte[][] board, int[] pos){
+        this.board = board;
+        this.pos = pos;
+    }
+
+    public int getDistance(){
+        return Distance;
+    }
+
+    public void setDistance(int Distance) {
+        this.Distance = Distance;
+    }
+
+    public int mannhattan(byte[][] goal){
+        int res = 0;
+        for (int i = 0; i < 3 ; i++) {
+            for (int j = 0; j < 3 ; j++) {
+                int[] my = search(goal[i][j]);
+                res += Math.abs(my[0]-i) + Math.abs(my[0]-j);
             }
         }
-        board.setDistance(0);
-        return board;
+        return res;
     }
 
-    public static int aMannhattan(Board initial, Board solution){
-        PriorityQueue<Board> list = new PriorityQueue<Board>();
-        int nodes = 0;
-        list.add(initial);
-        while( !list.element().equals(solution) ){
-            nodes ++;
-            Board board = list.remove();
-            int []pos = board.getPos();
-            for (int i = 0; i < 3 ; i++) {
-                    list.add(board.move(pos[0], i));
-                    nodes++;
-                    list.add(board.move(i, pos[1]));
-                    nodes++;
-            }
-//            System.out.println(list.size());
-        }
-        return nodes;
-    }
-
-    public static boolean res = false;
-    public static int iterativeDFS(Board initial, Board solution){
-        LinkedList<Board> list  = new LinkedList<>();
-        list.add(initial);
-        int nodes = 0;
-        res = false;
-        for (int i = 0; !res; i++) {
-            nodes += DFS(initial, solution, i);
-        }
-        return nodes;
-    }
-
-    public static int BFS(Board initial, Board solution){
-        LinkedList<Board> list  = new LinkedList<>();
-        list.add(initial);
-        int nodes = 0;
-        while( !list.getFirst().equals(solution)){
-            nodes ++;
-            Board board = list.removeFirst();
-            int []pos = board.getPos();
-            for (int i = 0; i < 3 ; i++) {
-                if ( !list.contains(board.move(pos[0], i)) ){
-                    list.addLast(board.move(pos[0], i));
-                    nodes++;
-                }
-                if ( !list.contains(board.move(i, pos[1])) ) {
-                    list.addLast(board.move(i, pos[1]));
-                    nodes++;
-                }
+    public int misplaced(byte[][] goal){
+        int res = 0;
+        for (int i = 0; i < 3 ; i++) {
+            for (int j = 0; j < 3 ; j++) {
+                res += (goal[i][j] == this.board[i][j])? 0 : 1;
             }
         }
-        return nodes;
+        return res;
     }
 
-    public static int DFS(Board initial, Board solution, int maxDepth){
-        LinkedList<Board> list  = new LinkedList<>();
-        HashSet<Board> visited = new HashSet<>();
-        list.add(initial);
-        visited.add(initial);
-        int nodes = 0;
-        while( !list.isEmpty() ){
-            nodes ++;
-            Board board = list.removeFirst();
-            if( board.getDistance()> maxDepth )
-                continue;
-            int []pos = board.getPos();
-            for (int i = 0; i < 3 ; i++) {
-                if( board.move(pos[0], i).equals(answer) || board.move(i, pos[1]).equals(answer)){
-                    res = true;
-                    return nodes;
-                }
-                if ( !(visited.contains(board.move(pos[0], i)) || board.move(pos[0], i).equals(board) )){
-                    list.addFirst(board.move(pos[0], i));
-                    visited.add(board.move(pos[0], i));
-                    nodes++;
-                }
-                if ( !(visited.contains(board.move(i, pos[1])) || board.move(i, pos[1]).equals(board)) ) {
-                    list.addFirst(board.move(i, pos[1]));
-                    visited.add(board.move(i, pos[1]));
-                    nodes++;
+    public Board move(int[] newPos){
+        byte[][] res = {{board[0][0], board[0][1], board[0][2]},{board[1][0], board[1][1], board[1][2]},{board[2][0], board[2][1], board[2][2]}};
+        if( newPos[0] == pos[0] ){
+            if (newPos[1] < pos[1]){
+                for (int i = newPos[1]+1; i <= pos[1]; i++)
+                    res[pos[0]][i] = this.board[pos[0]][i-1];
+            } else {
+                for (int i = pos[1] ; i < newPos[1]; i++)
+                    res[pos[0]][i] = this.board[pos[0]][i+1];
+            }
+        } else if( newPos[1] == pos[1] ){
+            if (newPos[0] < pos[0]){
+                for (int i = newPos[0]+1; i <= pos[0]; i++)
+                    res[i][pos[1]] = this.board[i-1][pos[1]];
+            } else {
+                for (int i = pos[0]; i < newPos[0]; i++)
+                    res[i][pos[1]] = this.board[i+1][pos[1]];
+            }
+        }
+        res[newPos[0]][newPos[1]] = 0;
+        Board newBoard = new Board(res, newPos);
+        newBoard.Distance = this.Distance + 1;
+        return newBoard;
+    }
+
+    public Board move(int x, int y){
+        int[] newPos = {x, y};
+        return move(newPos);
+    }
+
+    public String toString(){
+        String str = board[0][0]+" "+board[0][1]+" "+board[0][2]+"\n";
+        str += board[1][0]+" "+board[1][1]+" "+board[1][2]+"\n";
+        str += board[2][0]+" "+board[2][1]+" "+board[2][2]+"\n";
+        return str;
+    }
+
+    @Override
+    public boolean equals(Object o){
+        Board otherBoard = (Board)o;
+        if( board.length != otherBoard.board.length || board[0].length != otherBoard.board[0].length )
+            return false;
+        for (int i = 0; i < board.length ; i++) {
+            for (int j = 0; j < board[i].length ; j++) {
+                if( board[i][j] != otherBoard.board[i][j] )
+                    return false;
+            }
+        }
+        return true;
+    }
+
+    @Override
+    public int hashCode(){
+        return board.hashCode();
+    }
+
+    public int[] search(byte val){
+        int[] res = new int[2];
+        for (int i = 0; i < 3 ; i++) {
+            for (int j = 0; j < 3; j++) {
+                if (this.board[i][j] == val){
+                    res[0] = i;
+                    res[1] = j;
                 }
             }
         }
-        return nodes;
+        return res;
+    }
+
+    public int[] getPos(){
+        int[] res = {pos[0], pos[1]};
+        return res;
     }
 }
