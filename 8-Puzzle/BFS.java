@@ -4,16 +4,15 @@ public class BFS {
     static final byte[][] goal = {{1, 2, 3},{4, 5, 6},{7, 8, 0 }};
     static final int[] initPos = {2,2};
     static final Board answer = new Board(goal);
+    static Random rn = new Random(System.currentTimeMillis());
 
     public static void main(String[] args) {
-
         for (int i = 0; i < 100; i++) {
-            Board init = generate(10);
+            Board init = generate(5);
             //System.out.println(BFS(init, answer)+"\t"+DFS(init, answer)+"\t"+aMannhattan(init, answer));
             System.out.print(BFS(init, answer)+"\t");
             System.out.print(iterativeDFS(init, answer)+"\t");
-            String nodes = DFS(init, answer, 100000)+"\t";
-            System.out.println(nodes);
+            System.out.println(DFS(init, answer, 100000));
             //System.out.println(aMannhattan(init, answer));
         }
     }
@@ -21,7 +20,6 @@ public class BFS {
     public static Board generate(int movements){
         int[] pos =  {2, 2};
         Board board = new Board(goal, pos);
-        Random rn = new Random(System.currentTimeMillis());
         for (int i = 0; i < movements ; i++) {
             int newCoord = rn.nextInt(3);
             Board newBoard;
@@ -38,9 +36,8 @@ public class BFS {
                 board = newBoard;
                 pos = newBoard.getPos();
             }
-            //System.out.println(board);
         }
-        board.setDistancia(0);
+        board.setDistance(0);
         return board;
     }
 
@@ -99,14 +96,14 @@ public class BFS {
 
     public static int DFS(Board initial, Board solution, int maxDepth){
         LinkedList<Board> list  = new LinkedList<>();
-        LinkedList<Board> visited = new LinkedList<>();
+        HashSet<Board> visited = new HashSet<>();
         list.add(initial);
         visited.add(initial);
         int nodes = 0;
-        while( !list.isEmpty() && nodes <= 1000000000){
+        while( !list.isEmpty() ){
             nodes ++;
             Board board = list.removeFirst();
-            if( board.getDistancia()> maxDepth )
+            if( board.getDistance()> maxDepth )
                 continue;
             int []pos = board.getPos();
             for (int i = 0; i < 3 ; i++) {
@@ -129,7 +126,3 @@ public class BFS {
         return nodes;
     }
 }
-
-/*
-
- */
