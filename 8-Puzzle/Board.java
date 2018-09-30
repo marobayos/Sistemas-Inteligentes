@@ -4,6 +4,7 @@ public class Board implements Comparable<Board>{
     private int[] pos = new int[2];
 
     private int Distance;
+    private int distanceTotal;
 
     public Board(byte[][] board){
         this.board = board;
@@ -20,6 +21,10 @@ public class Board implements Comparable<Board>{
 
     public void setDistance(int Distance) {
         this.Distance = Distance;
+    }
+    
+    public void setDistanceTotal(int DistanceTotal) {
+        this.distanceTotal = DistanceTotal;
     }
 
     public int mannhattan(){
@@ -101,7 +106,7 @@ public class Board implements Comparable<Board>{
 
     @Override
     public int compareTo(Board tablero) {
-        return Integer.compare(getDistance(), tablero.getDistance());
+        return Integer.compare(this.distanceTotal, tablero.distanceTotal);
     }
 
     public int[] search(byte val){
