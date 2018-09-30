@@ -151,16 +151,12 @@ public class Puzzle {
             for (int i = 0; i < 3; i++) {
                 if ( solution.equals(board.move(pos[0], i)) || solution.equals(board.move(i, pos[1])))
                     return nodes;
-                if (!list.contains(board.move(pos[0], i))) {
-                    mod = board.move(pos[0], i);
-                    mod.setDistanceTotal(mod.getDistance()+mod.mannhattan());
-                    list.add(mod);
-                }
-                if (!list.contains(board.move(i, pos[1]))) {
-                    mod = board.move(i, pos[1]);
-                    mod.setDistanceTotal(mod.getDistance()+mod.mannhattan());
-                    list.add(mod);
-                }
+                mod = board.move(pos[0], i);
+                mod.setDistanceTotal(mod.getDistance()+mod.mannhattan());
+                list.add(mod);
+                mod = board.move(i, pos[1]);
+                mod.setDistanceTotal(mod.getDistance()+mod.mannhattan());
+                list.add(mod);
             }
         }
         return nodes;
@@ -178,16 +174,12 @@ public class Puzzle {
             for (int i = 0; i < 3; i++) {
                 if ( solution.equals(board.move(pos[0], i)) || solution.equals(board.move(i, pos[1])))
                     return nodes;
-                if (!list.contains(board.move(pos[0], i))) {
-                    mod = board.move(pos[0], i);
-                    mod.setDistanceTotal(mod.getDistance()+mod.misplaced());
-                    list.add(mod);
-                }
-                if (!list.contains(board.move(i, pos[1]))) {
-                    mod = board.move(i, pos[1]);
-                    mod.setDistanceTotal(mod.getDistance()+mod.misplaced());
-                    list.add(mod);
-                }
+                mod = board.move(pos[0], i);
+                mod.setDistanceTotal(mod.getDistance()+mod.misplaced());
+                list.add(mod);
+                mod = board.move(i, pos[1]);
+                mod.setDistanceTotal(mod.getDistance()+mod.misplaced());
+                list.add(mod);
             }
         }
         return nodes;
