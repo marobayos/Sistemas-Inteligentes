@@ -125,11 +125,11 @@ public class Puzzle {
                     mod = board.move(pos[0], i);
                     mod.setDistance(mod.getDistance()+mod.mannhattan());
                     list.add(mod);
-                    nodes++;
                 }
                 if (!list.contains(board.move(i, pos[1]))) {
-                    list.add(board.move(i, pos[1]));
-                    nodes++;
+                    mod = board.move(i, pos[1]);
+                    mod.setDistance(mod.getDistance()+mod.mannhattan());
+                    list.add(mod);
                 }
             }
         }
@@ -152,11 +152,11 @@ public class Puzzle {
                     mod = board.move(pos[0], i);
                     mod.setDistance(mod.getDistance()+mod.misplaced());
                     list.add(mod);
-                    nodes++;
                 }
                 if (!list.contains(board.move(i, pos[1]))) {
-                    list.add(board.move(i, pos[1]));
-                    nodes++;
+                    mod = board.move(i, pos[1]);
+                    mod.setDistance(mod.getDistance()+mod.misplaced());
+                    list.add(mod);
                 }
             }
         }
