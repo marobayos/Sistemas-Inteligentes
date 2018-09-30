@@ -106,7 +106,7 @@ public class Board implements Comparable<Board>{
 
     @Override
     public int compareTo(Board tablero) {
-        return Integer.compare(this.distanceTotal, tablero.distanceTotal);
+        return -Integer.compare(this.distanceTotal, tablero.distanceTotal);
     }
 
     public int[] search(byte val){
