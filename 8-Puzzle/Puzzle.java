@@ -11,7 +11,7 @@ public class Puzzle {
             Board init = generate(5);
             System.out.print(BFS(init, answer)+"\t");
             System.out.print(iterativeDFS(init, answer)+"\t");
-            System.out.print(DFS(init, answer, 100000)+"\t");
+            System.out.print(DFSIteration(init, answer, 100000)+"\t");
             System.out.print(asterisxMan(init, answer)+"\t");
             System.out.println(asterisxMis(init, answer));
         }
