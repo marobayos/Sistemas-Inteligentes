@@ -1,5 +1,6 @@
-public class Board {
+public class Board implements Comparable<Board>{
     private byte[][] board = new byte[3][3];
+    private byte[][] goal = {{1, 2, 3},{4, 5, 6},{7, 8, 0 }};
     private int[] pos = new int[2];
 
     private int Distance;
@@ -21,7 +22,7 @@ public class Board {
         this.Distance = Distance;
     }
 
-    public int mannhattan(byte[][] goal){
+    public int mannhattan(){
         int res = 0;
         for (int i = 0; i < 3 ; i++) {
             for (int j = 0; j < 3 ; j++) {
@@ -32,7 +33,7 @@ public class Board {
         return res;
     }
 
-    public int misplaced(byte[][] goal){
+    public int misplaced(){
         int res = 0;
         for (int i = 0; i < 3 ; i++) {
             for (int j = 0; j < 3 ; j++) {
@@ -96,6 +97,11 @@ public class Board {
     @Override
     public int hashCode(){
         return board.hashCode();
+    }
+
+    @Override
+    public int compareTo(Board tablero) {
+        return Integer.compare(getDistance(), tablero.getDistance());
     }
 
     public int[] search(byte val){

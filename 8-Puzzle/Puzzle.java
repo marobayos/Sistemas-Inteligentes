@@ -1,19 +1,19 @@
 import java.util.*;
 
-public class BFS {
+public class Puzzle {
     static final byte[][] goal = {{1, 2, 3},{4, 5, 6},{7, 8, 0 }};
-    static final int[] initPos = {2,2};
     static final Board answer = new Board(goal);
     static Random rn = new Random(System.currentTimeMillis());
 
     public static void main(String[] args) {
+        System.out.println("BFS\tIDDFS\tDFS \tMan\tMis");
         for (int i = 0; i < 100; i++) {
             Board init = generate(5);
-            //System.out.println(BFS(init, answer)+"\t"+DFS(init, answer)+"\t"+aMannhattan(init, answer));
             System.out.print(BFS(init, answer)+"\t");
             System.out.print(iterativeDFS(init, answer)+"\t");
-            System.out.println(DFS(init, answer, 100000));
-            //System.out.println(aMannhattan(init, answer));
+            System.out.print(DFS(init, answer, 100000)+"\t");
+            System.out.print(asterisxMan(init, answer)+"\t");
+            System.out.println(asterisxMis(init, answer));
         }
     }
 
@@ -39,25 +39,6 @@ public class BFS {
         }
         board.setDistance(0);
         return board;
-    }
-
-    public static int aMannhattan(Board initial, Board solution){
-        PriorityQueue<Board> list = new PriorityQueue<Board>();
-        int nodes = 0;
-        list.add(initial);
-        while( !list.element().equals(solution) ){
-            nodes ++;
-            Board board = list.remove();
-            int []pos = board.getPos();
-            for (int i = 0; i < 3 ; i++) {
-                    list.add(board.move(pos[0], i));
-                    nodes++;
-                    list.add(board.move(i, pos[1]));
-                    nodes++;
-            }
-//            System.out.println(list.size());
-        }
-        return nodes;
     }
 
     public static boolean res = false;
@@ -107,7 +88,7 @@ public class BFS {
                 continue;
             int []pos = board.getPos();
             for (int i = 0; i < 3 ; i++) {
-                if( board.move(pos[0], i).equals(answer) || board.move(i, pos[1]).equals(answer)){
+                if( board.move(pos[0], i).equals(solution) || board.move(i, pos[1]).equals(solution)){
                     res = true;
                     return nodes;
                 }
@@ -119,6 +100,56 @@ public class BFS {
                 if ( !(visited.contains(board.move(i, pos[1])) || board.move(i, pos[1]).equals(board)) ) {
                     list.addFirst(board.move(i, pos[1]));
                     visited.add(board.move(i, pos[1]));
+                    nodes++;
+                }
+            }
+        }
+        return nodes;
+    }
+
+    public static int asterisxMan(Board initial, Board solution) {
+        PriorityQueue<Board> list = new PriorityQueue<>();
+        list.add(initial);
+        int nodes = 0;
+        while (!list.peek().equals(solution)){
+            nodes++;
+            Board board = list.poll();
+            Board mod;
+            int[] pos = board.getPos();
+            for (int i = 0; i < 3; i++) {
+                if (!list.contains(board.move(pos[0], i))) {
+                    mod = board.move(pos[0], i);
+                    mod.setDistance(mod.getDistance()+mod.mannhattan());
+                    list.add(mod);
+                    nodes++;
+                }
+                if (!list.contains(board.move(i, pos[1]))) {
+                    list.add(board.move(i, pos[1]));
+                    nodes++;
+                }
+            }
+        }
+        return nodes;
+    }
+
+    public static int asterisxMis(Board initial, Board solution) {
+        PriorityQueue<Board> list = new PriorityQueue<>();
+        list.add(initial);
+        int nodes = 0;
+        while (!list.peek().equals(solution)){
+            nodes++;
+            Board board = list.poll();
+            Board mod;
+            int[] pos = board.getPos();
+            for (int i = 0; i < 3; i++) {
+                if (!list.contains(board.move(pos[0], i))) {
+                    mod = board.move(pos[0], i);
+                    mod.setDistance(mod.getDistance()+mod.misplaced());
+                    list.add(mod);
+                    nodes++;
+                }
+                if (!list.contains(board.move(i, pos[1]))) {
+                    list.add(board.move(i, pos[1]));
                     nodes++;
                 }
             }
