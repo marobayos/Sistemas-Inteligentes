@@ -48,7 +48,7 @@ public class Puzzle {
         int nodes = 0;
         res = false;
         for (int i = 0; !res; i++) {
-            nodes += DFS(initial, solution, i);
+            nodes += DFSIteration(initial, solution, i);
         }
         return nodes;
     }
@@ -77,7 +77,7 @@ public class Puzzle {
         return nodes;
     }
 
-    public static int DFS(Board initial, Board solution, int maxDepth){
+    public static int DFSIteration(Board initial, Board solution, int maxDepth){
         LinkedList<Board> list  = new LinkedList<>();
         HashSet<Board> visited = new HashSet<>();
         list.add(initial);
@@ -88,6 +88,36 @@ public class Puzzle {
             Board board = list.removeFirst();
             if( board.getDistance()> maxDepth )
                 continue;
+            int []pos = board.getPos();
+            for (int i = 0; i < 3 ; i++) {
+                if( board.move(pos[0], i).equals(solution) || board.move(i, pos[1]).equals(solution)){
+                    res = true;
+                    return nodes;
+                }
+                if ( !(visited.contains(board.move(pos[0], i)) || board.move(pos[0], i).equals(board) )){
+                    list.addFirst(board.move(pos[0], i));
+                    visited.add(board.move(pos[0], i));
+                    nodes++;
+                }
+                if ( !(visited.contains(board.move(i, pos[1])) || board.move(i, pos[1]).equals(board)) ) {
+                    list.addFirst(board.move(i, pos[1]));
+                    visited.add(board.move(i, pos[1]));
+                    nodes++;
+                }
+            }
+        }
+        return nodes;
+    }
+    
+    public static int DFS(Board initial, Board solution){
+        LinkedList<Board> list  = new LinkedList<>();
+        HashSet<Board> visited = new HashSet<>();
+        list.add(initial);
+        visited.add(initial);
+        int nodes = 0;
+        while( !list.isEmpty() ){
+            nodes ++;
+            Board board = list.removeFirst();
             int []pos = board.getPos();
             for (int i = 0; i < 3 ; i++) {
                 if( board.move(pos[0], i).equals(solution) || board.move(i, pos[1]).equals(solution)){
