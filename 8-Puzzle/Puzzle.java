@@ -57,11 +57,13 @@ public class Puzzle {
         LinkedList<Board> list  = new LinkedList<>();
         list.add(initial);
         int nodes = 0;
-        while( !list.getFirst().equals(solution)){
+        while( !list.isEmpty()){
             nodes ++;
             Board board = list.removeFirst();
             int []pos = board.getPos();
             for (int i = 0; i < 3 ; i++) {
+                if ( solution.equals(board.move(pos[0], i)) || solution.equals(board.move(i, pos[1])))
+                    return nodes;
                 if ( !list.contains(board.move(pos[0], i)) ){
                     list.addLast(board.move(pos[0], i));
                     nodes++;
@@ -111,7 +113,7 @@ public class Puzzle {
         PriorityQueue<Board> list = new PriorityQueue<>();
         list.add(initial);
         int nodes = 0;
-        while (!list.empty()){
+        while (!list.isEmpty()){
             nodes++;
             Board board = list.poll();
             Board mod;
@@ -138,12 +140,14 @@ public class Puzzle {
         PriorityQueue<Board> list = new PriorityQueue<>();
         list.add(initial);
         int nodes = 0;
-        while (!list.peek().equals(solution)){
+        while (!list.isEmpty()){
             nodes++;
             Board board = list.poll();
             Board mod;
             int[] pos = board.getPos();
             for (int i = 0; i < 3; i++) {
+                if ( solution.equals(board.move(pos[0], i)) || solution.equals(board.move(i, pos[1])))
+                    return nodes;
                 if (!list.contains(board.move(pos[0], i))) {
                     mod = board.move(pos[0], i);
                     mod.setDistance(mod.getDistance()+mod.misplaced());
