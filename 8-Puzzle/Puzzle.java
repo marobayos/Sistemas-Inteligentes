@@ -111,12 +111,14 @@ public class Puzzle {
         PriorityQueue<Board> list = new PriorityQueue<>();
         list.add(initial);
         int nodes = 0;
-        while (!list.peek().equals(solution)){
+        while (!list.empty()){
             nodes++;
             Board board = list.poll();
             Board mod;
             int[] pos = board.getPos();
             for (int i = 0; i < 3; i++) {
+                if ( solution.equals(board.move(pos[0], i)) || solution.equals(board.move(i, pos[1])))
+                    return nodes;
                 if (!list.contains(board.move(pos[0], i))) {
                     mod = board.move(pos[0], i);
                     mod.setDistance(mod.getDistance()+mod.mannhattan());
