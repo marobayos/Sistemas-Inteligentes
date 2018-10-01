@@ -1,10 +1,11 @@
+
 public class Board implements Comparable<Board>{
     private byte[][] board = new byte[3][3];
     private byte[][] goal = {{1, 2, 3},{4, 5, 6},{7, 8, 0 }};
     private int[] pos = new int[2];
 
     private int Distance;
-    private int distanceTotal;
+    private Integer distanceTotal;
 
     public Board(byte[][] board){
         this.board = board;
@@ -13,6 +14,7 @@ public class Board implements Comparable<Board>{
     public Board(byte[][] board, int[] pos){
         this.board = board;
         this.pos = pos;
+        distanceTotal = getDistance();
     }
 
     public int getDistance(){
@@ -22,7 +24,7 @@ public class Board implements Comparable<Board>{
     public void setDistance(int Distance) {
         this.Distance = Distance;
     }
-    
+
     public void setDistanceTotal(int DistanceTotal) {
         this.distanceTotal = DistanceTotal;
     }
@@ -50,24 +52,15 @@ public class Board implements Comparable<Board>{
 
     public Board move(int[] newPos){
         byte[][] res = {{board[0][0], board[0][1], board[0][2]},{board[1][0], board[1][1], board[1][2]},{board[2][0], board[2][1], board[2][2]}};
-        if( newPos[0] == pos[0] ){
-            if (newPos[1] < pos[1]){
-                for (int i = newPos[1]+1; i <= pos[1]; i++)
-                    res[pos[0]][i] = this.board[pos[0]][i-1];
-            } else {
-                for (int i = pos[1] ; i < newPos[1]; i++)
-                    res[pos[0]][i] = this.board[pos[0]][i+1];
-            }
-        } else if( newPos[1] == pos[1] ){
-            if (newPos[0] < pos[0]){
-                for (int i = newPos[0]+1; i <= pos[0]; i++)
-                    res[i][pos[1]] = this.board[i-1][pos[1]];
-            } else {
-                for (int i = pos[0]; i < newPos[0]; i++)
-                    res[i][pos[1]] = this.board[i+1][pos[1]];
-            }
+        if( newPos[0] == pos[0] && ( newPos[1]==pos[1]+1 || newPos[1]==pos[1]-1 ) ){
+            res[pos[0]][newPos[1]] = board[pos[0]][pos[1]];
+            res[pos[0]][pos[1]] = board[pos[0]][newPos[1]];
+        } else if( newPos[1] == pos[1] && ( newPos[0]==pos[0]+1 || newPos[0]==pos[0]-1 )){
+            res[newPos[0]][pos[1]] = board[pos[0]][pos[1]];
+            res[pos[0]][pos[1]] = board[newPos[0]][pos[1]];
+        } else {
+            return this;
         }
-        res[newPos[0]][newPos[1]] = 0;
         Board newBoard = new Board(res, newPos);
         newBoard.Distance = this.Distance + 1;
         return newBoard;
@@ -101,12 +94,12 @@ public class Board implements Comparable<Board>{
 
     @Override
     public int hashCode(){
-        return board.hashCode();
+        return this.toString().hashCode();
     }
 
     @Override
     public int compareTo(Board tablero) {
-        return -Integer.compare(this.distanceTotal, tablero.distanceTotal);
+        return this.distanceTotal.compareTo(tablero.distanceTotal);
     }
 
     public int[] search(byte val){
