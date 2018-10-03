@@ -54,15 +54,19 @@ public class Puzzle {
 
     public static int BFS(Board initial, Board solution){
         LinkedList<Board> list  = new LinkedList<>();
+        HashSet<Board> visited = new HashSet<>();
         list.add(initial);
         int nodes = 0;
-        while (!list.isEmpty()){
-            nodes++;
-            for( Board b : nextMovements(list.removeFirst()) ){
-                if( b.equals(solution) )
-                    return nodes;
-                list.addLast(b);
-            }
+        while( !list.isEmpty() ){
+            nodes ++;
+            Board board = list.removeFirst();
+            if(!visited.contains(board))
+                for( Board b : nextMovements(board) ){
+                    if( b.equals(solution) )
+                        return nodes;
+                    list.addLast(b);
+                }
+            visited.add(board);
         }
         return nodes;
     }

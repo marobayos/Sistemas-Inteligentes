@@ -34,7 +34,20 @@ public class Board implements Comparable<Board>{
         for (int i = 0; i < 3 ; i++) {
             for (int j = 0; j < 3 ; j++) {
                 int[] my = search(goal[i][j]);
-                res += Math.abs(my[0]-i) + Math.abs(my[0]-j);
+                res += Math.abs(my[0]-i) + Math.abs(my[1]-j);
+            }
+        }
+        return res;
+    }
+
+    public int[] search(byte val){
+        int[] res = new int[2];
+        for (int i = 0; i < 3 ; i++) {
+            for (int j = 0; j < 3; j++) {
+                if (this.board[i][j] == val){
+                    res[0] = i;
+                    res[1] = j;
+                }
             }
         }
         return res;
@@ -100,19 +113,6 @@ public class Board implements Comparable<Board>{
     @Override
     public int compareTo(Board tablero) {
         return this.distanceTotal.compareTo(tablero.distanceTotal);
-    }
-
-    public int[] search(byte val){
-        int[] res = new int[2];
-        for (int i = 0; i < 3 ; i++) {
-            for (int j = 0; j < 3; j++) {
-                if (this.board[i][j] == val){
-                    res[0] = i;
-                    res[1] = j;
-                }
-            }
-        }
-        return res;
     }
 
     public int[] getPos(){
