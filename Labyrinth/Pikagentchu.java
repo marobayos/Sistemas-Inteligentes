@@ -15,6 +15,7 @@ public class Pikagentchu implements AgentProgram {
     protected byte state = EXPLORE;
     protected Position position = new Position(50, 50);
     protected int a = 0;
+    protected Random rn = new Random(System.currentTimeMillis());
 
     Memory memory = new Memory();
 
@@ -58,8 +59,7 @@ public class Pikagentchu implements AgentProgram {
     }
 
     private void _explore() {
-        Random r = new Random();
-        int i = r.nextInt(10);
+        int i = rn.nextInt(10);
         if( i < 9 ) {
             if (!memory.getRight(position) && !memory.getSeenRight(position)) {
                 this.moveRight();
@@ -74,34 +74,49 @@ public class Pikagentchu implements AgentProgram {
             }
         }
         else{
-            i = r.nextInt(10);
             System.out.println("Aqui hizo random " + i );
-            if(i<5) {
-                if (!memory.getLeft(position) && !memory.getSeenLeft(position)) {
-                    this.moveLeft();
-                } else if (!memory.getFront(position) && !memory.getSeenFront(position)) {
-                    this.moveFront();
-                } else if (!memory.getRight(position) && !memory.getSeenRight(position)) {
-                    this.moveRight();
-                } else if (!memory.getBack(position) && !memory.getSeenBack(position)) {
-                    this.moveBack();
-                } else {
-                    this.state = RETURN;
-                }
-            }
-            else{
-                if (!memory.getFront(position) && !memory.getSeenFront(position)) {
-                    this.moveFront();
-                } else if (!memory.getBack(position) && !memory.getSeenBack(position)) {
-                    this.moveBack();
-                } else if (!memory.getRight(position) && !memory.getSeenRight(position)) {
-                    this.moveRight();
-                } else if (!memory.getLeft(position) && !memory.getSeenLeft(position)) {
-                    this.moveLeft();
-                } else {
-                    this.state = RETURN;
-                }
-            }
+            _random();
+        }
+    }
+
+    private void _random(){
+        int posib = 0;
+        if (!memory.getFront(position) && !memory.getSeenFront(position)) {
+            posib++;
+        }
+        if (!memory.getBack(position) && !memory.getSeenBack(position)) {
+            posib++;
+        }
+        if (!memory.getRight(position) && !memory.getSeenRight(position)) {
+            posib++;
+        }
+        if (!memory.getLeft(position) && !memory.getSeenLeft(position)) {
+            posib++;
+        }
+        if(posib == 0){
+            this.state = RETURN;
+            return;
+        }
+        int move = rn.nextInt(posib);
+        if (!memory.getFront(position) && !memory.getSeenFront(position)) {
+            if( move == 0 )
+                this.moveFront();
+            move --;
+        } 
+        if (!memory.getBack(position) && !memory.getSeenBack(position)) {
+            if( move == 0 )
+                this.moveBack();
+            move --;
+        }
+        if (!memory.getRight(position) && !memory.getSeenRight(position)) {
+            if( move == 0 )
+                this.moveRight();
+            move --;
+        }
+        if (!memory.getLeft(position) && !memory.getSeenLeft(position)) {
+            if( move == 0 )
+                this.moveLeft();
+            move --;
         }
     }
 
